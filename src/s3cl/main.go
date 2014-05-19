@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/user"
 	"io/ioutil"
+	"path"
 	"strings"
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
@@ -36,6 +38,8 @@ func main() {
 	if !setup_opts(&opts) {
 		return
 	}
+
+	//fmt.Println(opts)
 
 	subcmd := args[1]
 	if subcmd == "help" {
@@ -96,6 +100,31 @@ func setup_opts(opts *Options) bool {
 }
 
 func FileConfig(key string)(val string) {
+	usr, err := user.Current()
+	if err != nil {
+		panic(err)
+	}
+
+	config_file := path.Join(usr.HomeDir, ".s3cl")
+	content, err := ioutil.ReadFile(config_file)
+	if os.IsNotExist(err) {
+		return ""
+	}
+	if err != nil {
+	    panic(err)
+	}
+	
+	lines := strings.Split(string(content), "\n")
+	for _, line := range lines {
+		vals := strings.Split(line, "=")
+		if len(vals) != 2 {
+			continue
+		}
+		if strings.TrimSpace(vals[0]) == key {
+			return vals[1]
+		}
+	}
+
 	return ""
 }
 
