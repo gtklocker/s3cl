@@ -49,7 +49,7 @@ func main() {
 	} else if subcmd == "get" {
 		CmdGet(opts, args[2])
 	} else if subcmd == "put" {
-		CmdPut(opts, args[2], args[3])
+		CmdPut(opts, args[2], args[3:])
 	} else if subcmd == "del" {
 		CmdDel(opts, args[2])
 	} else if subcmd == "mv" {
@@ -179,25 +179,54 @@ func Get(opts Options, key string) (data []byte, err error){
 }
 
 
-func CmdPut(opts Options, key, file_path string) {
-	contType := "text/plain"
-	if strings.HasSuffix(file_path, ".xml") {
-		contType = "text/xml"
-	} else if strings.HasSuffix(file_path,".flv") {
-		contType = "video/x-flv"
+func CmdPut(opts Options, key string, file_paths []string) {
+
+	if strings.HasSuffix(key, "/") {
+		for _, file_path := range file_paths {
+
+			contType := "text/plain"
+			if strings.HasSuffix(file_path, ".xml") {
+				contType = "text/xml"
+			} else if strings.HasSuffix(file_path,".flv") {
+				contType = "video/x-flv"
+			}
+
+			d, err := ioutil.ReadFile(file_path)
+			if err != nil {
+				panic(err)
+				return
+			}
+
+			err = Put(opts, key + path.Base(file_path), d, contType)
+			if err != nil {
+				panic(err)
+				return
+			}
+		}
+	} else {
+		//if not ends with /, just put the first file
+		file_path := file_paths[0]
+		contType := "text/plain"
+		if strings.HasSuffix(file_path, ".xml") {
+			contType = "text/xml"
+		} else if strings.HasSuffix(file_path,".flv") {
+			contType = "video/x-flv"
+		}
+
+		d, err := ioutil.ReadFile(file_path)
+		if err != nil {
+			panic(err)
+			return
+		}
+
+		err = Put(opts, key, d, contType)
+		if err != nil {
+			panic(err)
+			return
+		}
 	}
 
-	d, err := ioutil.ReadFile(file_path)
-	if err != nil {
-		panic(err)
-		return
-	}
 
-	Put(opts, key, d, contType)
-	if err != nil {
-		panic(err)
-		return
-	}	
 }
 
 func Put(opts Options, key string, data []byte, contType string) error {

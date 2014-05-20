@@ -13,9 +13,9 @@ $s3cl help
 $s3cl config
 
 $s3cl get key
-$s3cl add key value(file, stdin, string, number)
+$s3cl put key value(file, stdin, string, number)
 $s3cl mv  key_src key_dest(file?/directory?)
-$s3cl rm  key
+$s3cl del key
 ```
 
 ## Configuration search order
