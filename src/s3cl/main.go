@@ -54,6 +54,8 @@ func main() {
 		CmdDel(opts, args[2])
 	} else if subcmd == "mv" {
 		CmdMove(opts, args[2], args[3])
+	} else if subcmd == "ls" {
+		CmdList(opts)
 	} else {  //default
 		help()
 	}
@@ -261,6 +263,29 @@ func Del(opts Options, key string) error{
 
 func CmdDel(opts Options, key string) {
 	err := Del(opts, key)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func List(opts Options) error{
+	auth := aws.Auth{AccessKey: opts.AccessKey, SecretKey: opts.SecretKey}
+	s3Instance := s3.New(auth, aws.Region{Name: "*", S3Endpoint: "http://s3.amazonaws.com"})
+	bkt := s3Instance.Bucket(opts.Bucket)
+
+	lst, err := bkt.List(opts.Prefix, "", "", 100)
+	// fmt.Println(lst)
+	if err == nil {
+		for _, r := range lst.Contents {
+			fmt.Println(r.Key)
+		}
+	}
+
+	return err
+}
+
+func CmdList(opts Options) {
+	err := List(opts)
 	if err != nil {
 		panic(err)
 	}

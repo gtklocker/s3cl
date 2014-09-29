@@ -9,3 +9,5 @@ fi
 
 # build and put executable to $GOPATH/bin/
 go install s3cl
+
+chmod +x ./bin/s3cl
