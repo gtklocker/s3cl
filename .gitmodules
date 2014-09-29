@@ -1,0 +1,6 @@
+[submodule "src/github.com/goamz/goamz"]
+	path = src/github.com/goamz/goamz
+	url = ../../goamz/goamz
+[submodule "src/github.com/jessevdk/go-flags"]
+	path = src/github.com/jessevdk/go-flags
+	url = ../../jessevdk/go-flags
