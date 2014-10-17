@@ -8,7 +8,7 @@ import (
 	"strings"
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
-	"s3cl/config"
+	"config"
 )
 
 
@@ -34,7 +34,7 @@ Options:
 }
 
 func main() {
-	args, err := config.Parse(&opts)
+	args, err := config.Parse(&opts, os.Args)
 	if err != nil {
     	panic(err)
     	os.Exit(1)
