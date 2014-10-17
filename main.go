@@ -8,12 +8,11 @@ import (
 	"strings"
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
-	"config"
 )
 
 
 
-var opts = config.Options{"", "", "", "", ""}
+var opts = Options{"", "", "", "", ""}
 
 func help() {
 	usage := `
@@ -34,7 +33,7 @@ Options:
 }
 
 func main() {
-	args, err := config.Parse(&opts, os.Args)
+	args, err := Parse(&opts, os.Args)
 	if err != nil {
     	panic(err)
     	os.Exit(1)
@@ -74,7 +73,7 @@ func CmdConf() {
 	fmt.Println("todo")
 }
 
-func CmdGet(opts config.Options, key string) {
+func CmdGet(opts Options, key string) {
 	d, err := Get(opts, key)
 	if err != nil {
 		panic(err)
@@ -90,7 +89,7 @@ func CmdGet(opts config.Options, key string) {
 	}
 }
 
-func Get(opts config.Options, key string) (data []byte, err error){
+func Get(opts Options, key string) (data []byte, err error){
 	auth := aws.Auth{AccessKey: opts.AccessKey, SecretKey: opts.SecretKey}
 	s3Instance := s3.New(auth, aws.Region{Name: "*", S3Endpoint: "http://s3.amazonaws.com"})
 	bkt := s3Instance.Bucket(opts.Bucket)
@@ -99,7 +98,7 @@ func Get(opts config.Options, key string) (data []byte, err error){
 }
 
 
-func CmdPut(opts config.Options, key string, file_paths []string) {
+func CmdPut(opts Options, key string, file_paths []string) {
 
 	if strings.HasSuffix(key, "/") {
 		for _, file_path := range file_paths {
@@ -149,7 +148,7 @@ func CmdPut(opts config.Options, key string, file_paths []string) {
 
 }
 
-func Put(opts config.Options, key string, data []byte, contType string) error {
+func Put(opts Options, key string, data []byte, contType string) error {
 	auth := aws.Auth{AccessKey: opts.AccessKey, SecretKey: opts.SecretKey}
 	s3Instance := s3.New(auth, aws.Region{Name: "*", S3Endpoint: "http://s3.amazonaws.com"})	
 	bkt := s3Instance.Bucket(opts.Bucket)
@@ -157,7 +156,7 @@ func Put(opts config.Options, key string, data []byte, contType string) error {
 	return bkt.Put(key, data, contType, s3.BucketOwnerFull, s3.Options{})
 }
 
-func CmdMove(opts config.Options, src_key, dest_key string) {
+func CmdMove(opts Options, src_key, dest_key string) {
 	d, err := Get(opts, src_key)
 	if err != nil {
 		panic(err)
@@ -171,7 +170,7 @@ func CmdMove(opts config.Options, src_key, dest_key string) {
 	Del(opts, src_key)
 }
 
-func Del(opts config.Options, key string) error{
+func Del(opts Options, key string) error{
 	auth := aws.Auth{AccessKey: opts.AccessKey, SecretKey: opts.SecretKey}
 	s3Instance := s3.New(auth, aws.Region{Name: "*", S3Endpoint: "http://s3.amazonaws.com"})
 	bkt := s3Instance.Bucket(opts.Bucket)
@@ -179,14 +178,14 @@ func Del(opts config.Options, key string) error{
 	return bkt.Del(key)
 }
 
-func CmdDel(opts config.Options, key string) {
+func CmdDel(opts Options, key string) {
 	err := Del(opts, key)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func List(opts config.Options) error{
+func List(opts Options) error{
 	auth := aws.Auth{AccessKey: opts.AccessKey, SecretKey: opts.SecretKey}
 	s3Instance := s3.New(auth, aws.Region{Name: "*", S3Endpoint: "http://s3.amazonaws.com"})
 	bkt := s3Instance.Bucket(opts.Bucket)
@@ -202,7 +201,7 @@ func List(opts config.Options) error{
 	return err
 }
 
-func CmdList(opts config.Options) {
+func CmdList(opts Options) {
 	err := List(opts)
 	if err != nil {
 		panic(err)
