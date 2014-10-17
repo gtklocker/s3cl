@@ -1,5 +1,7 @@
 # Command line tools for Amazon S3 services.
 
+## Status
+[ ![Codeship Status for jatsz/s3cl](https://codeship.io/projects/8b60ee50-37c9-0132-96d5-02255209da1c/status)](https://codeship.io/projects/41810)
 
 ## Target
 * fast
@@ -12,10 +14,11 @@
 $s3cl help
 $s3cl config
 
-$s3cl get key
-$s3cl put key value(file, stdin, string, number)
-$s3cl mv  key_src key_dest(file?/directory?)
-$s3cl del key
+$s3cl ls  s3://{bucket_name}{key}
+$s3cl get s3://{bucket_name}{key}
+$s3cl put s3://{bucket_name}{key} local_file/stdin
+$s3cl mv  s3://{bucket_name}{key} s3://{bucket_name}{key}
+$s3cl del s3://{bucket_name}{key}
 ```
 
 ## Configuration search order
