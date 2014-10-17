@@ -33,7 +33,7 @@ Options:
 }
 
 func main() {
-	args, err := Parse(&opts, os.Args)
+	args, err := Parse(opts, os.Args)
 	if err != nil {
     	panic(err)
     	os.Exit(1)

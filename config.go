@@ -19,7 +19,7 @@ type Options struct {
     Output    string `short:"o" long:"output" description:"output file name"`
 }
 
-func Parse(opts *Options, args []string)([]string, error){
+func Parse(opts Options, args []string)([]string, error){
 	fmt.Println(opts)
 	fmt.Println(args)
 	positionArgs, err := flags.ParseArgs(&opts, args)
