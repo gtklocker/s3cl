@@ -2,15 +2,13 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"io/ioutil"
-	"path"
-	"strings"
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
+	"io/ioutil"
+	"os"
+	"path"
+	"strings"
 )
-
-
 
 var opts = Options{"", "", "", "", ""}
 
@@ -35,12 +33,12 @@ Options:
 func main() {
 	args, err := Parse(opts, os.Args)
 	if err != nil {
-    	panic(err)
-    	os.Exit(1)
+		panic(err)
+		os.Exit(1)
 	}
 
 	if len(args) < 2 {
-		help()	
+		help()
 		return
 	}
 
@@ -60,14 +58,12 @@ func main() {
 		CmdMove(opts, args[2], args[3])
 	} else if subcmd == "ls" {
 		CmdList(opts)
-	} else {  //default
+	} else { //default
 		help()
 	}
 
 	return
 }
-
-
 
 func CmdConf() {
 	fmt.Println("todo")
@@ -81,7 +77,7 @@ func CmdGet(opts Options, key string) {
 	if opts.Output != "" {
 		err := ioutil.WriteFile(opts.Output, d, 0666)
 		if err != nil {
-	    	panic(err)
+			panic(err)
 		}
 	} else {
 		os.Stdout.Write(d)
@@ -89,14 +85,13 @@ func CmdGet(opts Options, key string) {
 	}
 }
 
-func Get(opts Options, key string) (data []byte, err error){
+func Get(opts Options, key string) (data []byte, err error) {
 	auth := aws.Auth{AccessKey: opts.AccessKey, SecretKey: opts.SecretKey}
 	s3Instance := s3.New(auth, aws.Region{Name: "*", S3Endpoint: "http://s3.amazonaws.com"})
 	bkt := s3Instance.Bucket(opts.Bucket)
 
 	return bkt.Get(key)
 }
-
 
 func CmdPut(opts Options, key string, file_paths []string) {
 
@@ -106,7 +101,7 @@ func CmdPut(opts Options, key string, file_paths []string) {
 			contType := "text/plain"
 			if strings.HasSuffix(file_path, ".xml") {
 				contType = "text/xml"
-			} else if strings.HasSuffix(file_path,".flv") {
+			} else if strings.HasSuffix(file_path, ".flv") {
 				contType = "video/x-flv"
 			}
 
@@ -116,7 +111,7 @@ func CmdPut(opts Options, key string, file_paths []string) {
 				return
 			}
 
-			err = Put(opts, key + path.Base(file_path), d, contType)
+			err = Put(opts, key+path.Base(file_path), d, contType)
 			if err != nil {
 				panic(err)
 				return
@@ -128,7 +123,7 @@ func CmdPut(opts Options, key string, file_paths []string) {
 		contType := "text/plain"
 		if strings.HasSuffix(file_path, ".xml") {
 			contType = "text/xml"
-		} else if strings.HasSuffix(file_path,".flv") {
+		} else if strings.HasSuffix(file_path, ".flv") {
 			contType = "video/x-flv"
 		}
 
@@ -145,12 +140,11 @@ func CmdPut(opts Options, key string, file_paths []string) {
 		}
 	}
 
-
 }
 
 func Put(opts Options, key string, data []byte, contType string) error {
 	auth := aws.Auth{AccessKey: opts.AccessKey, SecretKey: opts.SecretKey}
-	s3Instance := s3.New(auth, aws.Region{Name: "*", S3Endpoint: "http://s3.amazonaws.com"})	
+	s3Instance := s3.New(auth, aws.Region{Name: "*", S3Endpoint: "http://s3.amazonaws.com"})
 	bkt := s3Instance.Bucket(opts.Bucket)
 
 	return bkt.Put(key, data, contType, s3.BucketOwnerFull, s3.Options{})
@@ -170,7 +164,7 @@ func CmdMove(opts Options, src_key, dest_key string) {
 	Del(opts, src_key)
 }
 
-func Del(opts Options, key string) error{
+func Del(opts Options, key string) error {
 	auth := aws.Auth{AccessKey: opts.AccessKey, SecretKey: opts.SecretKey}
 	s3Instance := s3.New(auth, aws.Region{Name: "*", S3Endpoint: "http://s3.amazonaws.com"})
 	bkt := s3Instance.Bucket(opts.Bucket)
@@ -185,7 +179,7 @@ func CmdDel(opts Options, key string) {
 	}
 }
 
-func List(opts Options) error{
+func List(opts Options) error {
 	auth := aws.Auth{AccessKey: opts.AccessKey, SecretKey: opts.SecretKey}
 	s3Instance := s3.New(auth, aws.Region{Name: "*", S3Endpoint: "http://s3.amazonaws.com"})
 	bkt := s3Instance.Bucket(opts.Bucket)

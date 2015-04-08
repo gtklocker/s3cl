@@ -1,25 +1,24 @@
 package main
 
 import (
+	"fmt"
+	"github.com/jessevdk/go-flags"
 	"io/ioutil"
-	"path"
-	"strings"
 	"os"
 	"os/user"
-	"github.com/jessevdk/go-flags"
-	"fmt"
-
+	"path"
+	"strings"
 )
 
 type Options struct {
-    AccessKey string `short:"a" long:"access-key" description:"AccessKey"`
-    SecretKey string `short:"s" long:"secret-key" description:"SecretKey"`
-    Bucket    string `short:"b" long:"bucket" description:"s3 bucket"`
-    Prefix    string `long:"prefix" description:"prefix of s3 location"`
-    Output    string `short:"o" long:"output" description:"output file name"`
+	AccessKey string `short:"a" long:"access-key" description:"AccessKey"`
+	SecretKey string `short:"s" long:"secret-key" description:"SecretKey"`
+	Bucket    string `short:"b" long:"bucket" description:"s3 bucket"`
+	Prefix    string `long:"prefix" description:"prefix of s3 location"`
+	Output    string `short:"o" long:"output" description:"output file name"`
 }
 
-func Parse(opts Options, args []string)([]string, error){
+func Parse(opts Options, args []string) ([]string, error) {
 	fmt.Println(opts)
 	fmt.Println(args)
 	positionArgs, err := flags.ParseArgs(&opts, args)
@@ -38,7 +37,6 @@ func setup_opts(opts *Options) bool {
 		fmt.Println("access key not found")
 		return false
 	}
-
 
 	if opts.SecretKey == "" {
 		opts.SecretKey = FileConfig("secret_key")
@@ -65,7 +63,7 @@ func setup_opts(opts *Options) bool {
 	return true
 }
 
-func FileConfig(key string)(val string) {
+func FileConfig(key string) (val string) {
 	usr, err := user.Current()
 	if err != nil {
 		panic(err)
@@ -77,9 +75,9 @@ func FileConfig(key string)(val string) {
 		return ""
 	}
 	if err != nil {
-	    panic(err)
+		panic(err)
 	}
-	
+
 	lines := strings.Split(string(content), "\n")
 	for _, line := range lines {
 		vals := strings.Split(line, "=")
